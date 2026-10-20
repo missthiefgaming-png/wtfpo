@@ -17,18 +17,22 @@
     }
     * { box-sizing: border-box; }
     body {
+      position: relative;
+      isolation: isolate;
       min-height: 100vh;
       margin: 0;
       display: grid;
       place-items: center;
       padding: 28px 16px;
       color: var(--ink);
-      background: radial-gradient(ellipse at 12% 15%, #ffd3e8 0, transparent 34%),
-                  radial-gradient(ellipse at 90% 88%, #ffe1ef 0, transparent 36%), #fff5fa;
+      background: linear-gradient(135deg, #fff 0%, #fff7fa 48%, #fffafd 100%);
+      background-attachment: fixed;
       font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
     }
+    body::before { position: fixed; z-index: -1; inset: -18%; background: radial-gradient(ellipse 42rem 34rem at 16% 18%, #ffc9dfb8, transparent 72%), radial-gradient(ellipse 34rem 32rem at 83% 20%, #fff 0, transparent 74%), radial-gradient(ellipse 42rem 36rem at 83% 86%, #ffcfe2a8, transparent 72%), radial-gradient(ellipse 34rem 30rem at 12% 88%, #ffe6f0b8, transparent 70%); filter: blur(24px); opacity: .9; pointer-events: none; content: ""; animation: background-drift 32s ease-in-out infinite alternate; }
     .note {
       position: relative;
+      isolation: isolate;
       overflow: hidden;
       width: min(100%, 570px);
       padding: clamp(24px, 6vw, 44px);
@@ -41,6 +45,7 @@
     }
     .cover {
       position: relative;
+      isolation: isolate;
       width: min(100%, 570px);
       padding: clamp(28px, 7vw, 54px) clamp(22px, 6vw, 44px);
       border: 1px solid #f2bfd8;
@@ -51,6 +56,11 @@
       text-align: center;
       animation: arrive .65s ease both;
     }
+    .ambient-petals { position: absolute; z-index: -1; inset: 0; overflow: hidden; border-radius: inherit; pointer-events: none; }
+    .ambient-petal { position: absolute; top: var(--petal-top); left: var(--petal-left); width: 12px; height: 17px; border: 1px solid #fff9fc; border-radius: 95% 10% 95% 10%; background: linear-gradient(145deg, #fffafd, #ed9fbe 76%); opacity: .3; animation: ambient-petal-drift var(--drift-duration, 18s) ease-in-out var(--drift-delay, 0s) infinite alternate; }
+    .cover-art.opening-glow { animation: bouquet-opening-glow .72s ease-out both; }
+    .note.note-opening { animation: note-opening .58s ease-out both; }
+    .note.note-opening::after { position: absolute; z-index: 8; inset: 0; padding: 2px; border-radius: inherit; background: linear-gradient(110deg, transparent 0 39%, #fff 47%, #ef9abd 51%, transparent 61%) border-box; background-size: 260% 100%; pointer-events: none; content: ""; -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; animation: note-border-shimmer 1.15s ease-out both; }
     .cover::before, .cover::after { position: absolute; top: 20px; color: #e98aaf; font-size: 1.25rem; opacity: .75; pointer-events: none; }
     .cover::before { left: 24px; content: "♡"; transform: rotate(-14deg); }
     .cover::after { right: 24px; content: "♡"; transform: rotate(14deg); }
@@ -176,12 +186,37 @@
     .music-volume::-moz-range-thumb { width: 16px; height: 16px; border: 2px solid #fff; border-radius: 0; background: #dc4b8b; box-shadow: 0 2px 6px #a62b6144; clip-path: polygon(50% 94%, 8% 54%, 0 42%, 0 27%, 12% 10%, 29% 6%, 50% 27%, 71% 6%, 88% 10%, 100% 27%, 100% 42%, 92% 54%); }
     .music-status { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
     .cover-caption { margin: 18px 0 0; color: #a36580; font-family: Georgia, "Times New Roman", serif; font-size: .95rem; font-style: italic; }
-    @media (max-width: 480px) { .cover { padding: 34px 19px; border-radius: 25px; } .cover-art { width: min(100%, 300px); } .flower-hint { max-width: 100%; font-size: .7rem; } .cover-caption { font-size: .88rem; } }
     .cover[hidden], .note[hidden] { display: none; }
-    .seal { display: grid; place-items: center; width: 62px; height: 62px; margin: 0 auto 18px; border-radius: 50%; color: white; background: linear-gradient(145deg, #f178b2, #d73583); font-size: 30px; }
+    .seal { display: grid; place-items: center; width: 62px; height: 62px; margin: 0 auto 18px; border-radius: 50%; color: white; background: linear-gradient(145deg, #f178b2, #d73583); font-size: 30px; animation: seal-pulse 3.8s ease-in-out infinite; }
     .eyebrow { margin: 0 0 8px; color: var(--pink-deep); font-size: .78rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
     h1 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: clamp(2rem, 8vw, 3rem); font-weight: 500; letter-spacing: -.04em; }
     .intro { margin: 14px 0 24px; color: var(--muted); line-height: 1.65; }
+    .message-photos { position: relative; width: min(100%, 420px); height: 330px; margin: 4px auto 8px; }
+    .photo-card { position: absolute; top: 12px; width: 54%; max-width: 235px; margin: 0; padding: 9px 9px 12px; border: 1px solid #eee8ea; background: #fff; box-shadow: 0 12px 26px #38233030, 0 2px 4px #38233018; transform: rotate(var(--photo-tilt)); transition: transform .25s ease, box-shadow .25s ease; }
+    .photo-card { isolation: isolate; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+    .photo-card.photo-one { left: 1%; z-index: 1; --photo-tilt: -7deg; }
+    .photo-card.photo-two { top: 52px; right: 1%; z-index: 2; --photo-tilt: 8deg; }
+    .photo-card:hover { z-index: 3; transform: translateY(-4px) rotate(0deg) scale(1.025); box-shadow: 0 16px 30px #38233038, 0 2px 4px #38233018; }
+    .photo-card:focus-visible { outline: 3px solid #ee91bd; outline-offset: 4px; }
+    .photo-card.is-enlarged { top: 8px; right: auto; left: 50%; z-index: 10; transform: translateX(-50%) rotate(0deg) scale(1.32); box-shadow: 0 22px 44px #38233055, 0 0 0 5px #fff, 0 0 0 8px #f0a6c4; }
+    .photo-bloom { position: absolute; z-index: -1; inset: -34px; opacity: 0; pointer-events: none; }
+    .photo-bloom span { position: absolute; top: var(--bloom-y); left: var(--bloom-x); color: var(--bloom-color, #ed83ab); font-family: Georgia, serif; font-size: var(--bloom-size, 24px); line-height: 1; opacity: 0; text-shadow: 0 2px 9px #e879a544, 0 0 12px #fff; }
+    .photo-card.is-enlarged .photo-bloom { opacity: 1; }
+    .photo-card.is-enlarged .photo-bloom span { animation: photo-bloom-burst 2.8s ease-in-out var(--bloom-delay, 0s) infinite; }
+    .photo-placeholder, .message-photo img { display: grid; place-items: center; width: 100%; aspect-ratio: 1 / 1; border-radius: 0; }
+    .photo-placeholder { gap: 7px; border: 0; color: #ffe9f2; background: linear-gradient(145deg, #34242d, #201820); font-size: .8rem; }
+    .photo-placeholder[hidden], .message-photo img[hidden] { display: none; }
+    .photo-placeholder-icon { color: #e17aa4; font-family: Georgia, serif; font-size: 2rem; line-height: 1; }
+    .message-photo img { object-fit: cover; }
+    .photo-caption { display: grid; justify-items: center; margin: 9px 2px 0; text-align: center; }
+    .photo-hearts { color: #e65b91; font-family: "Segoe UI", sans-serif; font-size: .88rem; font-style: normal; letter-spacing: .2em; white-space: nowrap; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+    .photo-actions { display: flex; justify-content: center; gap: 10px; width: min(100%, 360px); margin: 0 auto 7px; }
+    .photo-upload { position: relative; display: inline-flex; align-items: center; justify-content: center; min-height: 38px; padding: 7px 13px; overflow: hidden; border: 1px solid #eeb8ce; border-radius: 999px; color: #99466b; background: #fff8fb; font-size: .8rem; font-weight: 700; cursor: pointer; }
+    .photo-upload:hover { background: #fff0f6; }
+    .photo-upload:focus-within { outline: 3px solid #ee91bd; outline-offset: 2px; }
+    .photo-upload input { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; opacity: 0; cursor: pointer; }
+    .photo-help { max-width: 340px; margin: 0 auto 20px; color: var(--muted); font-size: .68rem; line-height: 1.4; text-align: center; }
     .letter { margin: 0; padding: 22px; border: 1px solid #efc6d8; border-left: 4px solid #e98aaf; border-radius: 18px; background: linear-gradient(145deg, #fff8fb, #fff0f6); box-shadow: 0 8px 24px #b9277010; text-align: left; line-height: 1.8; }
     .letter p { margin: 0 0 14px; }
     .letter p:last-child { margin-bottom: 0; }
@@ -196,6 +231,10 @@
     .primary { border-color: var(--pink); color: white; background: var(--pink); }
     .primary:hover { border-color: var(--pink-deep); background: var(--pink-deep); }
     .reply { min-height: 1.5em; margin: 18px 0 0; color: var(--pink-deep); font-weight: 700; }
+    .restart-row { margin-top: 18px; }
+    .restart-note { border-color: #efc6d8; color: #99466b; background: #fff8fb; }
+    .restart-note::before { content: "✿"; margin-right: .5em; color: #d85e91; }
+    .restart-note:hover { border-color: #e99ab9; color: #873052; background: #fff0f6; }
     .small { margin: 8px 0 0; color: var(--muted); font-size: .8rem; }
     details { margin-top: 26px; border-top: 1px solid var(--line); padding-top: 18px; text-align: left; }
     summary { width: fit-content; color: var(--pink-deep); font-weight: 750; cursor: pointer; }
@@ -205,7 +244,41 @@
     textarea { min-height: 160px; resize: vertical; line-height: 1.55; }
     .editor-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
     .save-status { color: var(--pink-deep); font-size: .84rem; }
+    @media (max-width: 480px) {
+      body { display: block; padding: 12px 10px; }
+      .cover, .note { width: 100%; margin: 0 auto; border-radius: 22px; }
+      .cover { padding: 30px 16px; }
+      .note { padding: 24px 16px; }
+      .cover-art { width: min(100%, 300px); }
+      .flower-hint { max-width: 100%; font-size: .7rem; }
+      .cover-caption { font-size: .88rem; }
+      .cover h1, .note h1 { font-size: clamp(1.85rem, 9vw, 2.55rem); overflow-wrap: anywhere; }
+      .cover-copy { font-size: .95rem; }
+      .music-heading { flex-direction: column; gap: 9px; }
+      .music-controls { display: grid; grid-template-columns: auto minmax(0, 112px); justify-content: center; gap: 8px 10px; }
+      .music-toggle { grid-column: 1 / -1; justify-self: center; width: min(100%, 250px); }
+      .music-volume { width: min(112px, 35vw); }
+      .letter { padding: 16px; line-height: 1.7; overflow-wrap: anywhere; }
+      .message-photos { height: min(82vw, 326px); min-height: 300px; }
+      .photo-card { width: 54%; padding: 7px 7px 10px; }
+      .photo-card.photo-two { top: 46px; }
+      .photo-caption { margin-top: 7px; font-size: .73rem; }
+      .photo-actions { gap: 8px; }
+      .photo-upload { flex: 1 1 0; min-width: 0; padding-inline: 8px; font-size: .73rem; }
+      .photo-help { font-size: .62rem; }
+      .intro { margin-bottom: 18px; }
+      .actions { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 18px; }
+      .actions button, .restart-note { width: min(100%, 320px); justify-self: center; }
+      .restart-row { margin-top: 14px; }
+    }
     @keyframes arrive { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes background-drift { from { transform: translate3d(-1%, 0, 0) scale(1); } to { transform: translate3d(1.5%, -1%, 0) scale(1.045); } }
+    @keyframes seal-pulse { 0%, 100% { transform: scale(1); box-shadow: 0 4px 12px #d7358322; } 50% { transform: scale(1.045); box-shadow: 0 7px 20px #d7358340; } }
+    @keyframes ambient-petal-drift { from { transform: translate3d(0, 0, 0) rotate(-18deg); } to { transform: translate3d(var(--petal-drift-x, 16px), var(--petal-drift-y, 28px), 0) rotate(28deg); } }
+    @keyframes bouquet-opening-glow { 0%, 100% { filter: drop-shadow(0 14px 16px #b9277026); } 45% { filter: drop-shadow(0 0 20px #f39bc2) drop-shadow(0 14px 16px #b9277035); } }
+    @keyframes note-opening { from { opacity: 0; transform: translateY(12px) scale(.99); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes note-border-shimmer { from { background-position: 130% 0; } to { background-position: -60% 0; } }
+    @keyframes photo-bloom-burst { 0% { opacity: 0; transform: translateY(12px) scale(.35) rotate(-20deg); } 18% { opacity: .9; transform: translateY(0) scale(1) rotate(0); } 72% { opacity: .8; transform: translateY(-7px) scale(1.04) rotate(12deg); } 100% { opacity: 0; transform: translateY(-20px) scale(.75) rotate(28deg); } }
     @keyframes bloom-sway { 0%, 100% { transform: rotate(-1.8deg); } 50% { transform: rotate(1.8deg); } }
     @keyframes flower-tap { 0% { transform: scale(1) rotate(0); } 32% { transform: scale(1.3) rotate(-9deg); } 68% { transform: scale(1.12) rotate(7deg); } 100% { transform: scale(1) rotate(0); } }
     @keyframes heart-arrange { 0%, 100% { transform: translate(0,0) scale(1); } 40%, 68% { transform: translate(var(--heart-x),var(--heart-y)) scale(.9); } }
@@ -231,6 +304,7 @@
 </head>
 <body>
   <main class="cover" id="cover" aria-labelledby="cover-title">
+    <div class="ambient-petals" aria-hidden="true"><i class="ambient-petal" style="--petal-top:9%;--petal-left:8%;--petal-drift-x:24px;--petal-drift-y:34px;--drift-duration:19s"></i><i class="ambient-petal" style="--petal-top:31%;--petal-left:89%;--petal-drift-x:-25px;--petal-drift-y:28px;--drift-delay:-7s;--drift-duration:22s"></i><i class="ambient-petal" style="--petal-top:56%;--petal-left:5%;--petal-drift-x:28px;--petal-drift-y:-18px;--drift-delay:-11s;--drift-duration:20s"></i><i class="ambient-petal" style="--petal-top:72%;--petal-left:94%;--petal-drift-x:-22px;--petal-drift-y:-24px;--drift-delay:-4s;--drift-duration:23s"></i><i class="ambient-petal" style="--petal-top:43%;--petal-left:96%;--petal-drift-x:-19px;--petal-drift-y:20px;--drift-delay:-14s;--drift-duration:18s"></i></div>
     <div class="cover-petal-rain" aria-hidden="true"><i style="--petal-left:7%;--fall-delay:-4s;--fall-duration:8.4s;--petal-drift:38px"></i><i style="--petal-left:16%;--fall-delay:-1.2s;--fall-duration:9.2s;--petal-drift:-24px"></i><i style="--petal-left:25%;--fall-delay:-6.3s;--fall-duration:10s;--petal-drift:30px"></i><i style="--petal-left:34%;--fall-delay:-2.8s;--fall-duration:8.8s;--petal-drift:-34px"></i><i style="--petal-left:43%;--fall-delay:-5.1s;--fall-duration:9.6s;--petal-drift:26px"></i><i style="--petal-left:52%;--fall-delay:-.5s;--fall-duration:8.2s;--petal-drift:-28px"></i><i style="--petal-left:61%;--fall-delay:-3.7s;--fall-duration:10.4s;--petal-drift:36px"></i><i style="--petal-left:70%;--fall-delay:-1.8s;--fall-duration:9s;--petal-drift:-32px"></i><i style="--petal-left:79%;--fall-delay:-6.8s;--fall-duration:8.6s;--petal-drift:24px"></i><i style="--petal-left:88%;--fall-delay:-2.3s;--fall-duration:9.8s;--petal-drift:-38px"></i><i style="--petal-left:95%;--fall-delay:-5.7s;--fall-duration:8.9s;--petal-drift:28px"></i></div>
     <div class="message-flower-rain" aria-hidden="true"><span style="--flower-left:12%;--flower-delay:-3.8s;--flower-duration:10s;--flower-drift:30px">✿</span><span style="--flower-left:31%;--flower-delay:-.7s;--flower-duration:9s;--flower-drift:-24px">✿</span><span style="--flower-left:52%;--flower-delay:-6.4s;--flower-duration:11s;--flower-drift:28px">✿</span><span style="--flower-left:73%;--flower-delay:-2.5s;--flower-duration:9.6s;--flower-drift:-32px">✿</span><span style="--flower-left:89%;--flower-delay:-5.1s;--flower-duration:10.5s;--flower-drift:22px">✿</span></div>
     <svg class="cover-art" viewBox="0 0 360 400" role="img" aria-labelledby="rose-title rose-desc" xmlns="http://www.w3.org/2000/svg">
@@ -372,12 +446,33 @@
   </main>
 
   <main class="note" id="note" aria-labelledby="title" hidden>
+    <div class="ambient-petals" aria-hidden="true"><i class="ambient-petal" style="--petal-top:8%;--petal-left:7%;--petal-drift-x:24px;--petal-drift-y:30px;--drift-duration:20s"></i><i class="ambient-petal" style="--petal-top:25%;--petal-left:91%;--petal-drift-x:-24px;--petal-drift-y:24px;--drift-delay:-8s;--drift-duration:23s"></i><i class="ambient-petal" style="--petal-top:57%;--petal-left:4%;--petal-drift-x:22px;--petal-drift-y:-20px;--drift-delay:-12s;--drift-duration:19s"></i><i class="ambient-petal" style="--petal-top:81%;--petal-left:93%;--petal-drift-x:-27px;--petal-drift-y:-18px;--drift-delay:-5s;--drift-duration:22s"></i><i class="ambient-petal" style="--petal-top:44%;--petal-left:96%;--petal-drift-x:-18px;--petal-drift-y:20px;--drift-delay:-15s;--drift-duration:21s"></i></div>
     <div class="cover-petal-rain" aria-hidden="true"><i style="--petal-left:7%;--fall-delay:-3.2s;--fall-duration:8.5s;--petal-drift:32px"></i><i style="--petal-left:16%;--fall-delay:-.8s;--fall-duration:9.4s;--petal-drift:-28px"></i><i style="--petal-left:25%;--fall-delay:-5.7s;--fall-duration:10.2s;--petal-drift:36px"></i><i style="--petal-left:34%;--fall-delay:-2.1s;--fall-duration:8.7s;--petal-drift:-30px"></i><i style="--petal-left:43%;--fall-delay:-6.6s;--fall-duration:9.7s;--petal-drift:24px"></i><i style="--petal-left:52%;--fall-delay:-1.4s;--fall-duration:8.3s;--petal-drift:-36px"></i><i style="--petal-left:61%;--fall-delay:-4.5s;--fall-duration:10.1s;--petal-drift:30px"></i><i style="--petal-left:70%;--fall-delay:-2.8s;--fall-duration:9.1s;--petal-drift:-26px"></i><i style="--petal-left:79%;--fall-delay:-7.1s;--fall-duration:8.6s;--petal-drift:38px"></i><i style="--petal-left:88%;--fall-delay:-3.9s;--fall-duration:9.8s;--petal-drift:-34px"></i><i style="--petal-left:95%;--fall-delay:-5.2s;--fall-duration:8.9s;--petal-drift:26px"></i></div>
     <div class="message-flower-rain" aria-hidden="true"><span style="--flower-left:12%;--flower-delay:-3.8s;--flower-duration:10s;--flower-drift:30px">✿</span><span style="--flower-left:31%;--flower-delay:-.7s;--flower-duration:9s;--flower-drift:-24px">✿</span><span style="--flower-left:52%;--flower-delay:-6.4s;--flower-duration:11s;--flower-drift:28px">✿</span><span style="--flower-left:73%;--flower-delay:-2.5s;--flower-duration:9.6s;--flower-drift:-32px">✿</span><span style="--flower-left:89%;--flower-delay:-5.1s;--flower-duration:10.5s;--flower-drift:22px">✿</span></div>
     <div class="seal" aria-hidden="true">&#9825;</div>
     <p class="eyebrow">A little something for you</p>
     <h1 id="title">Dear <span id="crush-name">[Crush's Name]</span>,</h1>
     <p class="intro" id="intro">I wanted to tell you something honestly, and in my own words.</p>
+
+    <div class="message-photos" aria-label="Two optional photos">
+      <figure class="message-photo photo-card photo-one" role="button" tabindex="0" data-photo-name="the first photo" aria-label="Enlarge the first photo" aria-expanded="false">
+        <div class="photo-placeholder" id="photo-placeholder-1"><span class="photo-placeholder-icon" aria-hidden="true">♡</span><span>First picture</span></div>
+        <img id="message-photo-image-1" alt="First selected photo" hidden>
+        <figcaption class="photo-caption"><span class="sr-only">First picture</span><span class="photo-hearts" aria-hidden="true">♥ ♥ ♥</span></figcaption>
+        <span class="photo-bloom" aria-hidden="true"><span style="--bloom-x:42%;--bloom-y:-10%;--bloom-size:34px;--bloom-delay:0s">✿</span><span style="--bloom-x:-12%;--bloom-y:28%;--bloom-size:25px;--bloom-delay:.12s">✿</span><span style="--bloom-x:96%;--bloom-y:33%;--bloom-size:28px;--bloom-delay:.22s">✿</span><span style="--bloom-x:4%;--bloom-y:80%;--bloom-size:23px;--bloom-delay:.08s">✦</span><span style="--bloom-x:85%;--bloom-y:91%;--bloom-size:24px;--bloom-delay:.18s">✿</span></span>
+      </figure>
+      <figure class="message-photo photo-card photo-two" role="button" tabindex="0" data-photo-name="the second photo" aria-label="Enlarge the second photo" aria-expanded="false">
+        <div class="photo-placeholder" id="photo-placeholder-2"><span class="photo-placeholder-icon" aria-hidden="true">♡</span><span>Second picture</span></div>
+        <img id="message-photo-image-2" alt="Second selected photo" hidden>
+        <figcaption class="photo-caption"><span class="sr-only">Second picture</span><span class="photo-hearts" aria-hidden="true">♥ ♥ ♥</span></figcaption>
+        <span class="photo-bloom" aria-hidden="true"><span style="--bloom-x:42%;--bloom-y:-10%;--bloom-size:34px;--bloom-delay:.08s">✿</span><span style="--bloom-x:-12%;--bloom-y:28%;--bloom-size:25px;--bloom-delay:.2s">✿</span><span style="--bloom-x:96%;--bloom-y:33%;--bloom-size:28px;--bloom-delay:.1s">✿</span><span style="--bloom-x:4%;--bloom-y:80%;--bloom-size:23px;--bloom-delay:.22s">✦</span><span style="--bloom-x:85%;--bloom-y:91%;--bloom-size:24px;--bloom-delay:0s">✿</span></span>
+      </figure>
+    </div>
+    <div class="photo-actions">
+      <label class="photo-upload">Choose photo 1<input class="message-photo-input" data-photo-slot="1" type="file" accept="image/*" aria-label="Choose the first photo"></label>
+      <label class="photo-upload">Choose photo 2<input class="message-photo-input" data-photo-slot="2" type="file" accept="image/*" aria-label="Choose the second photo"></label>
+    </div>
+    <p class="photo-help" id="photo-help" role="status" aria-live="polite">Choose up to two photos. Previews are only on this device; upload them to GitHub to share them.</p>
 
     <section class="letter" aria-label="Confession message">
       <p>Hi <span data-name>[Crush's Name]</span>,</p>
@@ -391,6 +486,7 @@
       <button type="button" data-reply="Thank you for being honest. I respect how you feel. &#129293;">Just close this note</button>
     </div>
     <p class="reply" id="reply" role="status" aria-live="polite"></p>
+    <div class="restart-row"><button class="restart-note" id="restart-note" type="button">Back to flowers</button></div>
 
   </main>
   <script>
@@ -611,15 +707,79 @@
     confessionAudio.dataset.track = musicSource;
     confessionAudio.volume = Number(musicVolume.value);
     void startMusic(true);
-    document.getElementById("open-note").addEventListener("click", () => {
-      cover.hidden = true;
-      note.hidden = false;
-      note.setAttribute("tabindex", "-1");
-      note.focus();
+    const openNoteButton = document.getElementById("open-note");
+    openNoteButton.addEventListener("click", () => {
+      if (openNoteButton.disabled) return;
+      openNoteButton.disabled = true;
+      coverArt.classList.add("opening-glow");
+      window.setTimeout(() => {
+        cover.hidden = true;
+        coverArt.classList.remove("opening-glow");
+        note.hidden = false;
+        note.classList.add("note-opening");
+        note.setAttribute("tabindex", "-1");
+        note.focus();
+        window.setTimeout(() => note.classList.remove("note-opening"), 1250);
+        openNoteButton.disabled = false;
+      }, 620);
+    });
+    document.getElementById("restart-note").addEventListener("click", () => {
+      note.hidden = true;
+      note.classList.remove("note-opening");
+      cover.hidden = false;
+      document.getElementById("reply").textContent = "";
+      window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        animateFlower(coverArt.querySelector(".small-flower"), true);
+        showHeartPetals();
+      }
+      document.getElementById("open-note").focus({ preventScroll: true });
     });
     document.querySelectorAll("[data-reply]").forEach((button) => {
       button.addEventListener("click", () => {
         document.getElementById("reply").textContent = button.dataset.reply;
+      });
+    });
+    const photoCards = [...document.querySelectorAll(".photo-card")];
+    function togglePhotoSize(card) {
+      const shouldEnlarge = !card.classList.contains("is-enlarged");
+      photoCards.forEach((photoCard) => {
+        const isExpanded = shouldEnlarge && photoCard === card;
+        photoCard.classList.toggle("is-enlarged", isExpanded);
+        photoCard.setAttribute("aria-expanded", String(isExpanded));
+        photoCard.setAttribute("aria-label", `${isExpanded ? "Shrink" : "Enlarge"} ${photoCard.dataset.photoName}`);
+      });
+    }
+    photoCards.forEach((card) => {
+      card.addEventListener("click", () => togglePhotoSize(card));
+      card.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          togglePhotoSize(card);
+        }
+      });
+    });
+    const photoHelp = document.getElementById("photo-help");
+    document.querySelectorAll(".message-photo-input").forEach((photoInput) => {
+      const index = Number(photoInput.dataset.photoSlot);
+      const photoImage = document.getElementById(`message-photo-image-${index}`);
+      const photoPlaceholder = document.getElementById(`photo-placeholder-${index}`);
+      let selectedPhotoUrl = null;
+      photoInput.addEventListener("change", () => {
+        const file = photoInput.files && photoInput.files[0];
+        if (!file) return;
+        if (!file.type.startsWith("image/")) {
+          photoHelp.textContent = `Please choose an image file for photo ${index}.`;
+          photoInput.value = "";
+          return;
+        }
+        if (selectedPhotoUrl) URL.revokeObjectURL(selectedPhotoUrl);
+        selectedPhotoUrl = URL.createObjectURL(file);
+        photoImage.src = selectedPhotoUrl;
+        photoImage.alt = `Your selected photo ${index}`;
+        photoImage.hidden = false;
+        photoPlaceholder.hidden = true;
+        photoHelp.textContent = `Photo ${index} preview loaded on this device. Upload both images to GitHub to share them.`;
       });
     });
   </script>
